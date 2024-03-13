@@ -9,5 +9,5 @@ const studentSchema = mongoose.Schema({
     required: true
   },
 })
-const student = mongoose.model('Student', studentSchema)
+const student = mongoose.model('students', studentSchema)
 module.exports = student
