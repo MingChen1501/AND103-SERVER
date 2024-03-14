@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const student = require("../../model/student.js");
+const student = require('../../model/student.js');
 router.get("/students", async (req, res) => {
   //refactoring: call service layer
   await student
