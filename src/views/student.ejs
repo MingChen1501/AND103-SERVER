@@ -1,16 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
+
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    caption {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
+
 <body>
   <h1>Student</h1>
-  <p>Student Name</p>
-  <% students.forEach(student => { %>
-    <p><%= student.id %></p>
-    <p><%= student.name %></p>
-  <% }) %>
+  
+  <button onclick="createStudent()">Create</button>
+  <div id="createDiv"></div>
+  <div id="content">
+  </div>
+  <!-- <table>
+    <caption>
+      Student information
+    </caption>
+    <tr>
+      <th>ID</th>
+      <th>Full Name</th>
+    </tr>
+    <% students.forEach(student=> { %>
+      <tr>
+        <td>
+          <%= student.id %>
+        </td>
+        <td>
+          <%= student.fullname %>
+        </td>
+        <td colspan="3">
+          <button onclick="viewRecord(JSON.parse('<%= JSON.stringify(student) %>'))">
+            View
+          </button>
+          <button onclick="deleteRecord(JSON.parse('<%= JSON.stringify(student) %>'))">
+            Delete
+          </button>
+        </td>
+      </tr>
+      <% }) %>
+  </table> -->
+
+  <div id="dialog" style="display: none">
+    <button onclick="closeDialog()">Close Dialog</button>
+  </div>
+
+  <script>
+    const students = JSON.parse('<%- JSON.stringify(students) %>');
+    function renderTableOfContent(students) {
+      let html = `
+      <table>
+        <caption>Student information</caption>
+        <tr>
+          <th>ID</th>
+          <th>Fullname</th>
+          <th>Address</th>
+        </tr>
+      `;
+      students.forEach(student => {
+        html += `
+        <tr>
+          <td>${student.id}</td>
+          <td>${student.firstName} ${student.lastName}</td>
+          <td>${student.address}</td>
+          <td>
+            <button onclick="viewRecord('${student.id}')">View</button>
+            <button onclick="deleteRecord('${student.id}')">Delete</button>
+          </td>
+        </tr>
+        `;
+      });
+      html += `</table>`;
+      document.getElementById("content").style.display = "block";
+      document.getElementById("content").innerHTML = html;
+    }
+    function showInfomationOfStudent(data) {
+      return html = `
+      <table>
+        <caption>Student information</caption>
+        <tr>
+          <th>ID</th>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>Address</th>
+        </tr>
+        
+        <tr>
+          <td>${data.id}</td>
+        <td contenteditable="true" id="firstName">${data.firstName}</td>
+        <td contenteditable="true" id="lastName">${data.lastName}</td>
+        <td contenteditable="true" id="address">${data.address}</td>
+        </tr>
+      </table>
+      <button onclick="closeDialog('dialog')">Close Dialog</button>
+      <button onclick="editRecord('${data.id}')">Update</button>
+      `;
+    }
+    function openDialog(callback, id) {
+      document.getElementById(id).style.display = "block";
+      document.getElementById(id).innerHTML = callback;
+    }
+
+    function closeDialog(id) {
+      document.getElementById(id).style.display = "none";
+    }
+    function createStudent() {
+      openDialog(`
+      <table>
+        <caption>Student information</caption>
+        <tr>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>Address</th>
+        </tr>
+        <tr>
+          <td contenteditable="true" id="firstName"></td>
+          <td contenteditable="true" id="lastName"></td>
+          <td contenteditable="true" id="address"></td>
+        </tr>
+      </table>
+      <button onclick="closeDialog('createDiv')">Close Dialog</button>
+      <button onclick="saveRecord()">Save</button>
+      `, 'createDiv');
+    }
+    function saveRecord() {
+      let newStudent = {
+        firstName: document.getElementById("firstName").innerText,
+        lastName: document.getElementById("lastName").innerText,
+        address: document.getElementById("address").innerText
+      };
+      fetch('/api/students', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newStudent)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+          const dto = {
+            id: data._id,
+            firstName: newStudent.firstName,
+            lastName: newStudent.lastName,
+            address: newStudent.address
+          };
+          students.push(dto);
+          renderTableOfContent(students);
+          closeDialog();
+        })
+        .catch(error => {
+          console.error('Error creating student:', error);
+        });
+    }
+    function viewRecord(id) {
+      let data = students.find(student => student.id === id);
+      openDialog(showInfomationOfStudent(data), 'dialog');
+    }
+    function editRecord(id) {
+      let editedData = {
+        id: id,
+        firstName: document.getElementById("firstName").innerText,
+        lastName: document.getElementById("lastName").innerText,
+        address: document.getElementById("address").innerText
+      };
+      fetch('/api/students/' + id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editedData)
+      })
+        .then(response => response.json())
+        .then(async () => {
+          await students.forEach(student => {
+            if (student.id === id) {
+              student.firstName = editedData.firstName;
+              student.lastName = editedData.lastName;
+              student.address = editedData.address;
+            }
+          });
+          console.table(students)
+          renderTableOfContent(students);
+          closeDialog();
+        })
+        .catch(error => {
+          console.error('Error updating student:', error);
+        });
+    }
+    function deleteRecord(id) {
+      fetch('/api/students/' + id, {
+        method: 'DELETE'
+      })
+        .then(response => response.json())
+        .then(async () => {
+          await students.forEach((student, index) => {
+            if (student.id === id) {
+              students.splice(index, 1);
+            }
+          });
+          renderTableOfContent(students);
+        })
+        .catch(error => {
+          console.error('Error deleting student:', error);
+        });
+    }
+    renderTableOfContent(students);
+  </script>
 </body>
+
 </html>
