@@ -1,12 +1,10 @@
 const express = require('express');
-const mongoose = require('./persistence/MongoConnection.js');
-const router = require('./route/router.js')
+const router = require('./route')
 const bodyParser = require('body-parser');
-require('./config/AppConfig.js')
-const mailer = require('./config/Mailer.js');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
-
+require('./config')
+const productService = require('./service/ProductService.js');
 
 const PORT = 3000;
 const app = express();
@@ -15,7 +13,6 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(router);
-
 const users = [
   {
     id: 1,
@@ -88,13 +85,13 @@ const mailConent = {
   subject: 'Test Nodemailer',
   text: 'Hello from nodemailer',
 };
-mailer.sendMail(mailConent, (err, info) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('Email sent: ' + info.response);
-  }
-});
+// mailer.sendMail(mailConent, (err, info) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log('Email sent: ' + info.response);
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
