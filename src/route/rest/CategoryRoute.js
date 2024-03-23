@@ -71,4 +71,13 @@ router.delete("/:id", async (req, res) => {
     }
   }
 });
+router.get('/:id/products', async (req, res) => {
+  const categoryId = req.params.id;
+  try {
+    const products = await CategoryService.getCategoryByIdIncludeProduct(categoryId);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching products" });
+  }
+});
 module.exports = router;

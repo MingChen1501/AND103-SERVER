@@ -57,6 +57,10 @@ const productService = {
       throw new Error('Failed to delete product');
     }
   },
+  async getProductsByCategoryId(categoryId) {
+    const products = await Product.find({ categories: categoryId });
+    return products;
+  }
 };
 
 module.exports = productService;

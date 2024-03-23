@@ -19,9 +19,10 @@ const productSchema = mongoose.Schema({
     default: null,
   },
   categories: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: "Category",
     required: false,
+    default: []
   },
   details: {
     type: [
@@ -50,18 +51,12 @@ const productSchema = mongoose.Schema({
       },
     ],
     required: false,
-    default: [
-      {
-        color: null,
-        size: null,
-        stock: 0,
-        price: 0,
-      },
-    ],
+    default: [],
   },
   images: {
     type: [String],
     required: false,
+    default: []
   },
 });
 

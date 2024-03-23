@@ -1,5 +1,5 @@
-const Category = require('../model/Category');
 const CategoryRepository = require('../repository/CategoryRepository');
+const ProductService = require('./ProductService');
 
 const CategoryService = {
   async createCategory(category) {
@@ -21,6 +21,13 @@ const CategoryService = {
   async deleteCategory(id) {
     const deletedCategory = await CategoryRepository.deleteCategory(id);
     return deletedCategory;
+  },
+  async getCategoryByIdIncludeProduct(id) {
+    const category = await CategoryRepository.getCategoryById(id);
+    const products = await ProductService.getProductsByCategoryId(id);
+    const result = category.toObject();
+    result.products = products;
+    return result;
   }
 };
 module.exports = CategoryService;
