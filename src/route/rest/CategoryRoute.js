@@ -42,15 +42,26 @@ router.put("/:id", Validator.requiredField, async (req, res) => {
     await CategoryService.updateCategory(categoryId, categoryData);
     res.status(200).json(categoryData);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({ message: "Error updating category" });
   }
 });
-
+router.patch("/:id", Validator.containsField, async (req, res) => {
+  const categoryId = req.params.id;
+  const { name, description, image } = req.body;
+  const categoryData = { name, description, image };
+  try {
+    const updatedCategory = await CategoryService.updateCategory(categoryId, categoryData);
+    res.status(200).json(updatedCategory);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating category" });
+  }
+});
 router.delete("/:id", async (req, res) => {
   const categoryId = req.params.id;
   try {
-    await CategoryService.deleteCategory(categoryId);
+    const result = await CategoryService.deleteCategory(categoryId);
+    console.log(result);
     res.status(200).json({ message: "Category deleted" });
   } catch (error) {
     if (error.message === "Category not found") {
