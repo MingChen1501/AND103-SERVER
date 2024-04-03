@@ -33,16 +33,16 @@ router.post("/", ProductValidator.createProduct, async (req, res) => {
     res.status(500).json({ message: "Error creating product" });
   }
 });
-router.put("/:id", async (req, res) => {
-  const productId = req.params.id;
-  const productData = req.body;
-  try {
-    await ProductService.updateProduct(productId, productData);
-    res.status(200).json(productData);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating product" });
-  }
-});
+// router.put("/:id", async (req, res) => {
+//   const productId = req.params.id;
+//   const productData = req.body;
+//   try {
+//     await ProductService.updateProduct(productId, productData);
+//     res.status(200).json(productData);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error updating product" });
+//   }
+// });
 router.delete("/:id", async (req, res) => {
   const productId = req.params.id;
   try {
@@ -56,12 +56,23 @@ router.delete("/:id", async (req, res) => {
     }
   }
 });
-router.patch("/:id", async (req, res) => {
+// router.patch("/:id", async (req, res) => {
+//   const productId = req.params.id;
+//   const productData = req.body;
+//   try {
+//     const result = await ProductService.updateProduct(productId, productData);
+//     res.status(200).json(result);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error updating product" });
+//   }
+// });
+router.post("/:id/details", async (req, res) => {
   const productId = req.params.id;
-  const productData = req.body;
+  const {color, size, stock, price} = req.body;
+  const detailData = {color, size, stock, price};
   try {
-    await ProductService.updateProduct(productId, productData);
-    res.status(200).json(productData);
+    const result = await ProductService.createProductDetail(productId, detailData);
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Error updating product" });
   }

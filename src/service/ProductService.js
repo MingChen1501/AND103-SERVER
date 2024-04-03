@@ -56,6 +56,40 @@ const productService = {
       throw new Error("Failed to get products");
     }
   },
+  async getProductDetailById(productDetailId) {
+    try {
+      const productDetail = await ProductRepository.getProductByDetailId(
+        productDetailId
+      );
+      return productDetail;
+    } catch (error) {
+      throw new Error("Failed to get product detail");
+    }
+  },
+  async createProductDetail(productId, productDetail) {
+    try {
+      const product = await ProductRepository.getProductById(productId);
+      product.details.push(productDetail);
+      await product.save();
+      return productDetail;
+    } catch (error) {
+      throw new Error("Failed to create product detail");
+    }
+  },
+  async getProductDetailByIdAndProductDetailId(productId, productDetailId) {
+    try {
+      const product = await ProductRepository.getProductByIdAndProductDetailId(
+        productId,
+        productDetailId
+      );
+      const detail = product.details.find(
+        (detail) => detail._id == productDetailId
+      );
+      return product;
+    } catch (error) {
+      throw new Error("Failed to get product detail");
+    }
+  },
 };
 
 module.exports = productService;
