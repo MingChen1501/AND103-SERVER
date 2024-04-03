@@ -1,5 +1,7 @@
 const StudentModel = require("../model/student.js");
-
+/* 
+DEPRECATED
+*/
 // Define a function to handle the "get all students" request
 const getAllStudents = async (req, res) => {
   try {

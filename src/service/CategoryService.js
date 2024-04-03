@@ -14,6 +14,11 @@ const CategoryService = {
     const category = await CategoryRepository.getCategoryById(id);
     return category;
   },
+  async getCategoryByIds(ids) {
+    console.log('categoryService: getCategeoryByIds');
+    const categories = await CategoryRepository.getCategoriesByIds(ids);
+    return categories;
+  },
   async updateCategory(id, category) {
     const updatedCategory = await CategoryRepository.updateCategory(id, category);
     return updatedCategory;

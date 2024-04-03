@@ -10,6 +10,9 @@ const CategoryRepository = {
   async getCategoryById(id) {
     return await Category.findById(id);
   },
+  async getCategoriesByIds(ids) {
+    return await Category.find({ _id: { $in: ids } });
+  },
   async updateCategory(id, category) {
     return await Category.findByIdAndUpdate(id, category, { new: true });
   },

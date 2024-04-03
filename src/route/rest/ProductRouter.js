@@ -3,6 +3,7 @@ const router = express.Router();
 
 const ProductService = require("../../service/ProductService");
 const ProductValidator = require("../middleware/validator/ProductValidator");
+const CategoryService = require("../../service/CategoryService");
 router.get("/", async (req, res) => {
   try {
     const products = await ProductService.getProducts();
@@ -63,6 +64,20 @@ router.patch("/:id", async (req, res) => {
     res.status(200).json(productData);
   } catch (error) {
     res.status(500).json({ message: "Error updating product" });
+  }
+});
+router.get("/:id/categories", async (req, res) => {
+  const productId = req.params.id;
+  try {
+    const product = await ProductService.getProductById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    const categoryIds = product.categories;
+    const categories = await CategoryService.getCategoryByIds(categoryIds);
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching products" });
   }
 });
 module.exports = router;
