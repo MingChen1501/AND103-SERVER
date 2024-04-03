@@ -18,4 +18,4 @@ router.get('/students', async (req, res) => {
   });
   res.status(200).render(viewsPath, { students: studentsDto });
 })
-module.exports = router;
+// module.exports = router;
