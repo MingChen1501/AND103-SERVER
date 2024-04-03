@@ -9,8 +9,8 @@ const CartRepository = {
   async getCartById(id) {
     return await Cart.findById(id);
   },
-  async getCartByCustomerId(customerId) {
-    return await Cart.find({ customerId });
+  async getCartByCustomerId(userId) {
+    return await Cart.find({ userId });
   },
   async createCart(cart) {
     return await Cart.create(cart);
@@ -47,6 +47,15 @@ const CartRepository = {
       }
     });
     cart.items = items;
+    return await cart.save();
+  },
+  async deleteCartItemsFromCart(cartId, detailIds) {
+    const cart = await Cart.findById(cartId);
+    const items = cart.items;
+    const newItems = items.filter((item) => {
+      return !detailIds.includes(item._id.toString());
+    });
+    cart.items = newItems;
     return await cart.save();
   }
 }

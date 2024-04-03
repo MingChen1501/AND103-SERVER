@@ -13,7 +13,6 @@ const orderSchema = new mongoose.Schema({
   orderDetails: [{
     productDetailId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'ProductDetail', // Assuming you have a ProductDetail model defined
       required: true
     },
     quantity: {
@@ -23,7 +22,12 @@ const orderSchema = new mongoose.Schema({
     price: {
       type: Number,
       required: true
-    }
+    },
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true
+    },
   }],
   orderStatus: {
     type: String,
@@ -39,6 +43,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ['PAID', 'UNPAID'], // Assuming payment status options
     default: 'UNPAID'
+  },
+  totalAmount: {
+    type: Number,
+    required: true
   }
 });
 

@@ -4,9 +4,9 @@ const { log } = require("console");
 const CartService = require("../../service/CartService");
 
 router.get("/", async (req, res) => {
-  const customerId = req.query.userId;
-  log(customerId);
-  const carts = await CartService.getCartByCustomerId(customerId);
+  const userId = req.query.userId;
+  log(userId);
+  const carts = await CartService.getCartByUserId(userId);
   res.status(200).json(carts);
 });
 router.post("/", async (req, res) => {
@@ -74,6 +74,7 @@ router.post("/:id/details", async (req, res) => {
     const result = await CartService.addCartDetail(cartId, detailData);
     res.status(201).json(result);
   } catch (error) {
+    log(error);
     res.status(500).json({ message: "Error adding cart detail" });
   }
 });

@@ -7,8 +7,8 @@ const CartService = {
   async getCartById(id) {
     return await CartRepository.getCartById(id);
   },
-  async getCartByCustomerId(customerId) {
-    return await CartRepository.getCartByCustomerId(customerId);
+  async getCartByUserId(userId) {
+    return await CartRepository.getCartByCustomerId(userId);
   },
   async createCart(cart) {
     return await CartRepository.createCart(cart);
@@ -30,6 +30,9 @@ const CartService = {
   },
   async updateCartDetail(cartId, detailId, detailData) {
     return await CartRepository.updateCartDetail(cartId, detailId, detailData);
+  },
+  async deleteCartItemsFromCart(cartId, detailIds) {
+    return await CartRepository.deleteCartItemsFromCart(cartId, detailIds);
   }
 }
 module.exports = CartService;

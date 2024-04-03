@@ -27,11 +27,16 @@ const productSchema = mongoose.Schema({
   details: {
     type: [
       {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: false,
+          auto: true,
+          allowNull: false
+        },
         color: {
           type: String,
           required: false,
-          default: null,
-  
+          default: null
         },
         size: {
           type: String,
@@ -48,7 +53,8 @@ const productSchema = mongoose.Schema({
           required: false,
           default: 0,
         },
-      },
+      }
+      
     ],
     required: false,
     default: [],
