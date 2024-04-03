@@ -18,9 +18,9 @@ router.post('/login', async (req, res) => {
 // Register route
 router.post('/register', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    console.log(username, password);
-    await UserService.register(username, password);
+    const { username, password, phoneNumber, email } = req.body;
+    console.log(username, password, phoneNumber, email );
+    await UserService.register(username, password, phoneNumber, email );
     // Handle successful registration
     res.status(200).json({ message: 'Registration successful'});
   } catch (error) {
