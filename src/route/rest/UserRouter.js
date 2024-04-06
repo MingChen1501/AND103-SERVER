@@ -7,9 +7,9 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    await UserService.login(username, password);
+    const result = await UserService.login(username, password);
     // Handle successful login
-    res.status(200).json({ message: 'Login successful'});
+    res.status(200).json({ userId: result._id, username: result.username});
   } catch (error) {
     // Handle login error
     res.status(400).json({ message: 'Login failed', error: error.message });
